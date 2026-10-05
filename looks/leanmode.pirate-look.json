@@ -1,0 +1,63 @@
+{
+  "app": "pirate-beach-look",
+  "version": 1,
+  "name": "LeanMode",
+  "savedAt": "2026-09-03T15:33:43.090Z",
+  "look": {
+    "controllers": {
+      "quality": "phone",
+      "weather": "Partly cloudy",
+      "time of day (h)": 10,
+      "clock running": false,
+      "day length (s)": 86400,
+      "follow real clock": false,
+      "sky look": "partlyCloudy",
+      "cloud coverage": 0.5,
+      "night lights": 1.5,
+      "camera preset": "Native (Blender match)",
+      "focal length (mm)": 29.63,
+      "film look": "Sea Breeze Presetpro",
+      "look strength": 0.22,
+      "lens character": 0,
+      "lens flare": 0,
+      "vignette": 0.9,
+      "film grain": 0,
+      "shadow softness": 0.15,
+      "shade fill": 1.25,
+      "sand bounce": 0.9,
+      "sky shadow": 0.6,
+      "contact shading": 0.25,
+      "sand close-up": 0.5,
+      "anti-alias edges": 0.16,
+      "ocean clarity": 0.44,
+      "ocean seabed light": 0.5,
+      "ocean caustics": 1,
+      "ocean seabed shadows": 1,
+      "ocean shadow softness": 0.06,
+      "ocean underwater objects": 1,
+      "ocean sky reflection": 0.72,
+      "ocean object reflections": 1,
+      "ocean surface roughness": 1,
+      "ocean wave height": 1,
+      "ocean cove shelter": 0.6,
+      "ocean wave sharpness": 0.9,
+      "ocean whitecaps": 1.6,
+      "ocean breaker height": 0.42,
+      "ocean wave variety": 0.9,
+      "ocean breaker lip": 3.2,
+      "ocean crest foam": 1.5,
+      "ocean foam lead": 0.75,
+      "ocean distant shine": 0.25,
+      "ocean wave period": 8.5,
+      "ocean far sea life": 1,
+      "ocean sediment tint": 0.25,
+      "ocean turbidity": 3
+    },
+    "folders": {
+      "looks": {
+        "controllers": {},
+        "folders": {}
+      }
+    }
+  }
+}

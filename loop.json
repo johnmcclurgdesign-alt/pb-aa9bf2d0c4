@@ -1,0 +1,14 @@
+{
+  "manifestVersion": 1,
+  "entry": "index.html",
+  "title": "Pirate Beach",
+  "tiers": [
+    "phone",
+    "tablet",
+    "laptop",
+    "desktop",
+    "ultra",
+    "max"
+  ],
+  "readyBudgetSeconds": 60
+}

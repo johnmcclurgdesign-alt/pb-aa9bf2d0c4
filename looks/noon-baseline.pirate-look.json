@@ -1,0 +1,28 @@
+{
+  "app": "pirate-beach-look",
+  "version": 1,
+  "name": "Noon Baseline",
+  "savedAt": "2026-08-31T17:55:26.142Z",
+  "look": {
+    "controllers": {
+      "quality": "desktop",
+      "weather": "Partly cloudy",
+      "time of day (h)": 12,
+      "clock running": false,
+      "day length (s)": 86400,
+      "follow real clock": false,
+      "sky look": "partlyCloudy",
+      "cloud coverage": 0.5,
+      "night lights": 1,
+      "camera preset": "Native (Blender match)",
+      "focal length (mm)": 27,
+      "anti-alias edges": 0.16
+    },
+    "folders": {
+      "looks": {
+        "controllers": {},
+        "folders": {}
+      }
+    }
+  }
+}

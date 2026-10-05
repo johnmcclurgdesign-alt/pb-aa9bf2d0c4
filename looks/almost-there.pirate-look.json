@@ -1,0 +1,40 @@
+{
+  "app": "pirate-beach-look",
+  "version": 1,
+  "name": "Almost there",
+  "savedAt": "2026-09-03T02:31:51.858Z",
+  "look": {
+    "controllers": {
+      "quality": "desktop",
+      "weather": "Partly cloudy",
+      "time of day (h)": 15.43,
+      "clock running": false,
+      "day length (s)": 86400,
+      "follow real clock": false,
+      "sky look": "partlyCloudy",
+      "cloud coverage": 0.5,
+      "night lights": 1,
+      "camera preset": "Native (Blender match)",
+      "focal length (mm)": 27,
+      "film look": "None",
+      "look strength": 1,
+      "lens character": 0,
+      "lens flare": 0.35,
+      "vignette": 0,
+      "film grain": 0,
+      "shadow softness": 0.05,
+      "shade fill": 3,
+      "sand bounce": 1.3,
+      "sky shadow": 0.6,
+      "contact shading": 0.25,
+      "sand close-up": 0.5,
+      "anti-alias edges": 0.16
+    },
+    "folders": {
+      "looks": {
+        "controllers": {},
+        "folders": {}
+      }
+    }
+  }
+}

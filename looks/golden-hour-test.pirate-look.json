@@ -1,0 +1,28 @@
+{
+  "app": "pirate-beach-look",
+  "version": 1,
+  "name": "Golden Hour Test",
+  "savedAt": "2026-08-31T18:12:54.737Z",
+  "look": {
+    "controllers": {
+      "quality": "desktop",
+      "weather": "Partly cloudy",
+      "time of day (h)": 17.22,
+      "clock running": false,
+      "day length (s)": 86400,
+      "follow real clock": false,
+      "sky look": "partlyCloudy",
+      "cloud coverage": 0.5,
+      "night lights": 1,
+      "camera preset": "Ultra wide 16",
+      "focal length (mm)": 16,
+      "anti-alias edges": 0.16
+    },
+    "folders": {
+      "looks": {
+        "controllers": {},
+        "folders": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "manifestVersion": 2,
+  "loopId": "pirate-beach",
+  "timeZone": "America/Chicago",
+  "runSeed": 1491,
+  "epoch": 1791090000,
+  "validFrom": 1791090000,
+  "validUntil": 1791176400,
+  "prefetchLeadSec": 1800,
+  "events": []
+}

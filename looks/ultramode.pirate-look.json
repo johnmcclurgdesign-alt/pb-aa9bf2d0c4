@@ -1,0 +1,56 @@
+{
+  "app": "pirate-beach-look",
+  "version": 1,
+  "name": "UltraMode",
+  "savedAt": "2026-09-14T05:20:27.099655Z",
+  "look": {
+    "controllers": {
+      "ambient volume": 0.15,
+      "anti-alias edges": 0.16,
+      "camera drift": 0.52,
+      "camera preset": "Native (Blender match)",
+      "clock running": false,
+      "cloud coverage": 0.5,
+      "contact AO": "gtao",
+      "contact hardening": 1,
+      "contact reach": 0.55,
+      "contact shading": 0.25,
+      "day length (s)": 86400,
+      "film grain": 0,
+      "film look": "Sea Breeze Presetpro",
+      "focal length (mm)": 29.63,
+      "follow real clock": false,
+      "foreground blur (m)": 0,
+      "ground brightness": 0.82,
+      "ground hue": -21,
+      "ground saturation": 0.91,
+      "lens character": 0.11,
+      "lens flare": 0.09,
+      "look strength": 0.57,
+      "night lights": 1,
+      "quality": "desktop",
+      "sand bounce": 0.7,
+      "sand close-up": 0.5,
+      "sand ripple": 0.48,
+      "sand softness": 0,
+      "shade fill": 1.25,
+      "shadow contact": 0.5,
+      "shadow softness": 0.15,
+      "sky look": "partlyCloudy",
+      "sky shadow": 0.75,
+      "time of day (h)": 15,
+      "tree brightness": 1,
+      "tree hue": -8,
+      "tree saturation": 0.73,
+      "unlock camera": false,
+      "vignette": 0.85,
+      "weather": "Partly cloudy"
+    },
+    "folders": {
+      "looks": {
+        "controllers": {},
+        "folders": {}
+      }
+    }
+  }
+}

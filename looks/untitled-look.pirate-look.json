@@ -1,0 +1,55 @@
+{
+  "app": "pirate-beach-look",
+  "version": 1,
+  "name": "untitled look",
+  "savedAt": "2026-09-14T05:18:36.818Z",
+  "look": {
+    "controllers": {
+      "quality": "desktop",
+      "weather": "Partly cloudy",
+      "time of day (h)": 10.08,
+      "clock running": false,
+      "day length (s)": 86400,
+      "follow real clock": false,
+      "sky look": "partlyCloudy",
+      "cloud coverage": 0.5,
+      "night lights": 1,
+      "ground hue": -21,
+      "ground saturation": 0.91,
+      "ground brightness": 0.82,
+      "tree hue": -8,
+      "tree saturation": 0.73,
+      "tree brightness": 1,
+      "camera drift": 0.52,
+      "ambient volume": 0.15,
+      "camera preset": "Native (Blender match)",
+      "focal length (mm)": 25,
+      "foreground blur (m)": 16,
+      "film look": "Sea Breeze Presetpro",
+      "look strength": 0.57,
+      "lens character": 0.11,
+      "lens flare": 0.175,
+      "vignette": 0.85,
+      "film grain": 0,
+      "shadow softness": 0.15,
+      "contact hardening": 1,
+      "shade fill": 1.25,
+      "sand bounce": 1,
+      "sky shadow": 0.75,
+      "contact AO": "gtao",
+      "contact shading": 0.25,
+      "contact reach": 0.55,
+      "sand close-up": 0.5,
+      "sand ripple": 0.48,
+      "sand softness": 0,
+      "shadow contact": 0.5,
+      "anti-alias edges": 0.16
+    },
+    "folders": {
+      "looks": {
+        "controllers": {},
+        "folders": {}
+      }
+    }
+  }
+}
