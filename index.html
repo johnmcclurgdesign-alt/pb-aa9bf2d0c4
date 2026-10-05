@@ -3,8 +3,8 @@
   <head>
     <meta name="robots" content="noindex, nofollow, noarchive">
     <meta charset="UTF-8" />
-    <link rel="preload" href="/Program Files/Git/pb-aa9bf2d0c4/loading-logo.svg" as="image" fetchpriority="high" />
-    <link rel="preload" href="/Program Files/Git/pb-aa9bf2d0c4/fonts/im-fell-english-italic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/pb-aa9bf2d0c4/loading-logo.svg" as="image" fetchpriority="high" />
+    <link rel="preload" href="/pb-aa9bf2d0c4/fonts/im-fell-english-italic.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <!-- iPhone has no element-fullscreen API (measured 2026-09-03: Safari AND Chrome).
          The only chrome-free route is Add to Home Screen; these make that launch
@@ -49,7 +49,7 @@
          (`contain`), so the fade lands on the live scene where the picture was. */
       #load::before {
         content: ""; position: absolute; inset: 0;
-        background: url(/Program%20Files/Git/pb-aa9bf2d0c4/loading.webp) center / contain no-repeat;
+        background: url(/pb-aa9bf2d0c4/loading.webp) center / contain no-repeat;
         filter: blur(12px) brightness(.42);
       }
       /* The header is the static Pirate Beach logo (source\Signboards\SVG\ThePirateBeach_logo.svg, fill set to the
@@ -58,7 +58,7 @@
          The line under it is IM Fell English italic, self-hosted (public/fonts, SIL OFL: OFL.txt beside it) and
          preloaded: the shell may not reach Google, and the cover is the first paint. Sizes follow the 16:9 frame
          (--fw): the logo 19% of its width tall, the line 2.3%. */
-      @font-face { font-family: 'IM Fell English'; font-style: italic; src: url(/Program%20Files/Git/pb-aa9bf2d0c4/fonts/im-fell-english-italic.woff2) format('woff2'); font-display: block; }
+      @font-face { font-family: 'IM Fell English'; font-style: italic; src: url(/pb-aa9bf2d0c4/fonts/im-fell-english-italic.woff2) format('woff2'); font-display: block; }
       #load { --fw: min(100vw, 177.78vh); }
       #load .inner { position: relative; text-align: center; font: italic clamp(15px, calc(var(--fw) * .023), 28px)/1.5 'IM Fell English', Georgia, serif;
         color: #d8d3c4; text-shadow: 0 1px 4px rgba(0, 0, 0, .7); }
@@ -74,9 +74,9 @@
       @keyframes pb-spin { to { transform: rotate(360deg); } }
       @media (prefers-reduced-motion: reduce) { #loadspin { animation-duration: 2.4s; } }
     </style>
-    <script type="module" crossorigin src="/Program Files/Git/pb-aa9bf2d0c4/assets/index-D6ZovPVw.js"></script>
-    <link rel="modulepreload" crossorigin href="/Program Files/Git/pb-aa9bf2d0c4/assets/three.tsl-CgkGVHRI.js">
-    <link rel="modulepreload" crossorigin href="/Program Files/Git/pb-aa9bf2d0c4/assets/show-DzQohDS0.js">
+    <script type="module" crossorigin src="/pb-aa9bf2d0c4/assets/index-CpcIFIj7.js"></script>
+    <link rel="modulepreload" crossorigin href="/pb-aa9bf2d0c4/assets/three.tsl-CgkGVHRI.js">
+    <link rel="modulepreload" crossorigin href="/pb-aa9bf2d0c4/assets/show-DzQohDS0.js">
   </head>
   <body>
     <script>if (self !== top) document.documentElement.classList.add('framed');</script>
@@ -85,7 +85,7 @@
     <a id="back" href="../../">&#8592; loops</a>
     <div id="app"></div>
     <div id="load"><div class="inner">
-      <img id="loadlogo" src="/Program Files/Git/pb-aa9bf2d0c4/loading-logo.svg" alt="The Pirate Beach" />
+      <img id="loadlogo" src="/pb-aa9bf2d0c4/loading-logo.svg" alt="The Pirate Beach" />
       <span id="loadtxt">Hoisting the mainsail&hellip;</span>
       <div id="loadspin" aria-hidden="true"></div>
     </div></div>
