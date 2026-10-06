@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "behaviors": [
+    {
+      "id": "nap",
+      "name": "Nap",
+      "loop": true,
+      "notes": "",
+      "steps": [
+        {
+          "clip": "lie_sleep",
+          "seconds": 20,
+          "fade": 0.3
+        },
+        {
+          "clip": "lie_sleep_end",
+          "seconds": 0.85,
+          "fade": 0.3
+        },
+        {
+          "clip": "lie_loop",
+          "seconds": 5,
+          "fade": 0.3
+        },
+        {
+          "clip": "lie_sleep_start",
+          "seconds": 0.85,
+          "fade": 0.3
+        }
+      ]
+    }
+  ]
+}
