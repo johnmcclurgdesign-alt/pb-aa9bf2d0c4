@@ -1,0 +1,45 @@
+{
+  "_": "Budgets for the Dripping Pickle Loop. ONE home for the numbers, read by both halves of the rig (tools/budget-check.mjs on disk, tools/budget-rig.js in the page). These are measured facts handed down by the app program via PLAN.md §3 and loops-docs — they are not tuned here. Changing one means changing PLAN §3 first.",
+
+  "payload": {
+    "maxBytes": 209715200,
+    "_source": "PLAN §3 — catalog Loop payload ceiling, 200 MB zip (BP1/Q40, loops-docs)",
+    "_note": "Measured over the files a payload would actually carry: the loop entry, tools/, vendor/, and the assets that loop fetches. Authoring sources (.blend inputs, bake PNGs the exporter folds into a glb) are NOT payload.",
+
+    "excludeFromPayload": [
+      "assets/dripping-pickle/brick_mural_wall.png",
+      "assets/dripping-pickle/sign_dripping_pickle_baked.png",
+      "assets/dripping-pickle/roof_planks_graded.png",
+      "assets/dripping-pickle/export-factors.json"
+    ],
+    "_excludeWhy": "★ AUTHORING SOURCES, NOT PAYLOAD — and this list is EXPLICIT on purpose. These four are inputs to tools/blender-export-dripping-pickle.py: the flattened mural, the baked sign, the graded roof tile and the baseColorFactor table. The exporter folds them INTO structure.glb and the loop never fetches one of them — verified against the browser's own resource timeline, which lists 11 asset requests and none of these. They are 40 MB, a fifth of the ceiling, so counting them would be a large lie; but dropping them by a silent heuristic would let a genuinely shipped asset hide behind the same rule. Anything in an asset directory that is NOT on this list counts, referenced or not."
+  },
+
+  "residentTextureBytes": {
+    "maxBytes": 387973120,
+    "_source": "PLAN §3 — resident GPU texture memory ≤ ~370 MB (WG1m memo). 450–650 MB fails ~25% of runs.",
+    "_note": "Resident, not on disk. WebP and PNG both decode to RGBA8, so bytes-on-disk say nothing: 18.4 MB of WebP measured 802 MB resident. Mips are counted at 4/3."
+  },
+
+  "drawCalls": {
+    "max": 233,
+    "phoneKnee": 49,
+    "_source": "Josh, SIGNED 2026-09-10 on issue #73 (DQ11): \"Sign 233 on #73.\" The previous 180 was an iPad number carried down from WG1k/WG1m and is SUPERSEDED FOR THIS LOOP, in those words, on that issue.",
+    "_note": "max FAILS the rig. phoneKnee only warns: the target is ~30 FPS on a phone (SQ3), not 60, so exceeding the knee is a real cost but not automatically a stop. Counted across a WHOLE frame — prepasses and composer passes included, not just the beauty pass.",
+    "_why233": "★ THE SIGNED NUMBER HAS TO BE IN THE FILE, OR THE GATE CANNOT DETECT A REGRESSION. BUD2 took the frame from 2,189 to 233 and Josh signed 233 the same day, but this line was left at 180 — so every run since has reported a red that was already accepted, and a real regression to 400 would have looked exactly the same as the known one. Recorded here at BUG1 (2026-09-11) after re-measuring 233 on the merged tree, twenty-two consecutive frame-boundary samples plus the rig's own autorun. ⚠ This is BOOKKEEPING FOR A DECISION ALREADY TAKEN IN WRITING, not a budget tuned to fit the build; the remaining 133 material groups are a texture-atlas row, and the phone's frame rate is BUD3's, not this number's."
+  },
+
+  "pixelFloor": {
+    "minLitFraction": 0.45,
+    "lumaFloor": 0.02,
+    "minMeanLuma": 0.07,
+    "_source": "PLAN §3 — validation asserts on the PICTURE, never on cadence (WG1m): full-draw-count frames have rendered black.",
+    "_note": "minLitFraction is the share of sampled pixels above lumaFloor. Re-fit only alongside a grade change, and say so.",
+    "_refit": "2026-08-31, DP-W2, alongside the night grade + night GI bake. MEASURED in the shipped entry (no ?dev=1) at the ROOM pose, 1600x900: 84.1% of the frame above luma 0.02, mean luma 0.153. The night grade did NOT endanger the old floor — 0.35/0.03 passed with 2.4x and 5.1x headroom, i.e. it would have waved through a frame five times darker than the one that ships. Raised to 0.45/0.07, which keeps ~1.9x and ~2.2x margin so an art-direction nudge cannot cry wolf, while a room that goes dark now actually fails. ⚠ ONE sample, not a distribution: the three screens are the brightest things in the frame and their video content varies, but they are a small share of frame AREA, so the margin above covers them going black. Re-runs to build a range were impossible here — every automated re-run returned the rig\u0027s own \"no frame was drawn within 5000 ms\" because the tool driving the browser hides the pane, which stops requestAnimationFrame. That is the SAME cause as the 2026-08-31 session-1 failure recorded in issue #83, now identified: it is the harness, not the rig, and the rig\u0027s refusal to invent a number is it working correctly."
+  },
+
+  "network": {
+    "allowRuntimeHttp": false,
+    "_source": "PLAN §3 — every dependency vendored; any runtime https:// import is refused by publish-checks (WG2)."
+  }
+}

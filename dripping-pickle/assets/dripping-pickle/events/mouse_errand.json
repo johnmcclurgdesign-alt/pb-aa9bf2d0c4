@@ -1,0 +1,68 @@
+{
+  "id": "mouse_errand",
+  "kind": "ambient",
+  "enabled": true,
+  "description": "Caper comes out through the wall crack, runs an errand across the open floor, and goes back in. The controller owns the three-route sequence (out, errand, in) because that is a property of the room's geometry; this event owns WHICH errand, at what pace, and how many laps \u2014 and, being on the shared clock, that every viewer sees him appear on the same second. Replaces the placeholder cycle DP-W6 shipped in index.html.",
+  "salt": 4109,
+  "schedule": {
+    "meanGapSec": 210,
+    "minGapSec": 95,
+    "gapJitter": 0.5
+  },
+  "durationSec": 46,
+  "exclusive": [
+    "mouse"
+  ],
+  "priority": 0,
+  "draws": [
+    {
+      "name": "route",
+      "kind": "pick",
+      "pool": [
+        "patrol_floor",
+        "patrol_floor",
+        "crate_dash"
+      ]
+    },
+    {
+      "name": "profile",
+      "kind": "pick",
+      "pool": [
+        "errand",
+        "errand",
+        "wary"
+      ]
+    },
+    {
+      "name": "laps",
+      "kind": "pick",
+      "pool": [
+        1,
+        1,
+        2
+      ]
+    }
+  ],
+  "tracks": [
+    {
+      "channel": "npc",
+      "target": "mouse",
+      "action": "scurry",
+      "at": 0,
+      "params": {
+        "route": "{route}",
+        "profile": "{profile}",
+        "laps": "{laps}"
+      }
+    },
+    {
+      "channel": "audio",
+      "target": "mouse_scurry",
+      "action": "play",
+      "at": 0.4,
+      "params": {
+        "gain": 0.35
+      }
+    }
+  ]
+}

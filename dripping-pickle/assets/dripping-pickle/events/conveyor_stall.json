@@ -1,0 +1,18 @@
+{
+  "id": "conveyor_stall",
+  "kind": "ambient",
+  "enabled": true,
+  "description": "Gate A §8.1 signed, canon §6 rare: the belt brakes over a ramp, one jar is left trembling mid-frame, then it restarts. Stops the room's one constant motion. DP-W3 built the mechanism; this file is what schedules it. Audio carries most of it — the audio track is the cue DP-W7 subscribes to.",
+  "salt": 4101,
+  "schedule": { "meanGapSec": 5400, "minGapSec": 1800, "gapJitter": 0.5 },
+  "durationSec": 12,
+  "exclusive": ["conveyor"],
+  "priority": 5,
+  "draws": [
+    { "name": "seconds", "kind": "range", "min": 4.5, "max": 8.5 }
+  ],
+  "tracks": [
+    { "channel": "equipment", "target": "conveyor", "action": "stall", "at": 0, "params": { "seconds": "{seconds}" } },
+    { "channel": "audio", "target": "belt_stall", "action": "play", "at": 0 }
+  ]
+}

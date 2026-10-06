@@ -1,0 +1,65 @@
+{
+  "id": "mouse_freeze",
+  "kind": "user",
+  "enabled": true,
+  "description": "INT-004, canon §7: a viewer touches the mouse and he freezes — and a mouse that does not bolt is a mouse the cat can actually reach. LOCAL: the cat's path is local (NPC-004), so where he is when this fires differs per client and this can never touch the shared schedule. The event sets up the BEAT — the mouse holds, the cat comes — and the cat's controller owns the SEQUENCE inside it (pounce, bat, release, the mouse away to the hole, a paw washed about it), because how long the approach takes is a distance across a room, not a timestamp. `npc/cat/hunt` refuses when there is no prey out, so a fire that arrives with him in the wall plays nothing rather than a cat stalking an empty floor. ★ IT CLAIMS NO EXCLUSIVE CHANNEL, AND THAT IS THE POINT: `exclusive` DROPS rather than queues, and the only time the mouse is tappable at all is while an ambient beat has him out of the wall — so an event exclusive on `mouse` could be refused by the very errand that made the tap possible. Measured: a press during mouse_errand fired nothing and logged nothing at all. The remaining risk is a scheduled beat commanding him mid-freeze, which the controller's own refusals already handle. The hold is 18–26 s and NOT the 9–15 s it was first authored at: measured, the cat took most of twenty seconds to cross the room and the freeze expired with him 0.61 m away, so the beat ended in the mouse simply walking off before anything happened. It is an upper bound rather than a duration — the cat's arrival releases him (the controller's bat-and-release), so the number only has to outlast the walk.",
+  "salt": 4130,
+  "trigger": {
+    "target": "mouse"
+  },
+  "durationSec": 26,
+  "exclusive": [],
+  "priority": 1,
+  "draws": [
+    {
+      "name": "hold",
+      "kind": "range",
+      "min": 18,
+      "max": 26
+    },
+    {
+      "name": "chase",
+      "kind": "range",
+      "min": 18,
+      "max": 24
+    }
+  ],
+  "tracks": [
+    {
+      "channel": "npc",
+      "target": "mouse",
+      "action": "freeze",
+      "at": 0,
+      "params": {
+        "seconds": "{hold}"
+      }
+    },
+    {
+      "channel": "audio",
+      "target": "mouse_scurry",
+      "action": "play",
+      "at": 0,
+      "params": {
+        "gain": 0.5
+      }
+    },
+    {
+      "channel": "npc",
+      "target": "cat",
+      "action": "hunt",
+      "at": 0.6,
+      "params": {
+        "seconds": "{chase}"
+      }
+    },
+    {
+      "channel": "audio",
+      "target": "cat_hunt",
+      "action": "play",
+      "at": 1.4,
+      "params": {
+        "gain": 0.8
+      }
+    }
+  ]
+}

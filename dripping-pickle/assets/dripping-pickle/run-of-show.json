@@ -1,0 +1,12 @@
+{
+  "_": "The SEED run-of-show manifest (loops-docs 10-platform/55). The world side of every event lives in events/*.json; this is the run: the seed, the epoch every device replays FROM, the validity window, optional per-event schedule overrides, and cues (timestamp-scripted playback — an episode is cues, not code). A bundled Loop runs on this forever until the shell's refresh channel exists, so it is rebased onto the current window at open (runofshow.js) rather than replaying months. Never reset epoch to 'now' in code: that is what makes a resumed device diverge.",
+  "manifestVersion": 1,
+  "loopId": "dripping-pickle-webgl",
+  "runSeed": 2026090201,
+  "epoch": 1788372000,
+  "validFrom": 1788372000,
+  "validUntil": 1788393600,
+  "prefetchLeadSec": 3600,
+  "events": {},
+  "cues": []
+}

@@ -1,0 +1,64 @@
+{
+  "id": "cat_hunts",
+  "kind": "ambient",
+  "enabled": true,
+  "description": "The chase. The mouse comes out on his errand and the cat gets up and goes after him \u2014 genuinely: the cat's destination is the mouse's LIVE position, re-read four times a second (Josh's call, 2026-09-06). What is shared is the decision \u2014 that a hunt happens, at this second, for this long; the path each viewer sees is their own, exactly as a local trigger's response is. The mouse track leads by two seconds so there is prey on the floor before the cat is asked to hunt: npc/cat/hunt REFUSES when the floor is empty, and that refusal is logged rather than played as a cat stalking nothing. \u2605 THE RATE IS AUTHORED AGAINST A DWELL, NOT AGAINST A DAY (Josh, 2026-09-07: watched for minutes, saw the mouse cycle twice and the cat never leave the bed). It first shipped at a 1500 s mean gap, and because this event is exclusive on BOTH channels \u2014 and the schema DROPS a blocked event rather than queueing it \u2014 the mouse channel being busy 22% of the time (mouse_errand, 46 s on a 210 s gap) plus mouse_belt_run's 6.5% turned that into an effective 36 MINUTES between chases. The row's headline beat was invisible to any realistic viewer. 480/260 lands it at roughly one chase every 11 minutes after collisions, so a 30-minute dwell contains two or three. Re-check this arithmetic whenever mouse_errand's gap or duration moves \u2014 the collision rate is what binds here, not the authored gap. \u2605 AND THE ESCAPE IS NOT SCRIPTED HERE. An earlier cut carried a npc/mouse/flee track at +34 s as well as the proximity reflex, which is TWO MECHANISMS FOR ONE BEAT: a fixed timestamp cannot know whether the cat ever got close, so the mouse bolted on schedule whether or not anything was chasing him \u2014 and it fired after a pounce had already resolved the chase, yanking him into the wall for no visible reason. mouse_bolt (local, on proximity) owns the escape; this event only sets the hunt up and calls it off.",
+  "salt": 4111,
+  "schedule": {
+    "meanGapSec": 480,
+    "minGapSec": 260,
+    "gapJitter": 0.45
+  },
+  "durationSec": 60,
+  "exclusive": [
+    "cat",
+    "mouse"
+  ],
+  "priority": 1,
+  "draws": [
+    {
+      "name": "chase",
+      "kind": "range",
+      "min": 26,
+      "max": 44
+    }
+  ],
+  "tracks": [
+    {
+      "channel": "npc",
+      "target": "mouse",
+      "action": "scurry",
+      "at": 0,
+      "params": {
+        "route": "patrol_floor",
+        "profile": "errand",
+        "laps": 2
+      }
+    },
+    {
+      "channel": "npc",
+      "target": "cat",
+      "action": "hunt",
+      "at": 2,
+      "params": {
+        "seconds": "{chase}"
+      }
+    },
+    {
+      "channel": "audio",
+      "target": "cat_hunt",
+      "action": "play",
+      "at": 2,
+      "params": {
+        "gain": 0.5
+      }
+    },
+    {
+      "channel": "npc",
+      "target": "cat",
+      "action": "rest",
+      "at": 50,
+      "params": {}
+    }
+  ]
+}

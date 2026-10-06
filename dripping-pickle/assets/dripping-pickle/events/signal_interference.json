@@ -1,0 +1,20 @@
+{
+  "id": "signal_interference",
+  "kind": "ambient",
+  "enabled": true,
+  "description": "Canon §6 common, Gate A §7.4: a brief burst of signal interference on the screens — the feed conceit's licence for every glitch. Which screens, how hard and how long are draws, so no two bursts read alike and no viewer can learn a pattern. Deliberately no exclusive channel: it may land during anything, and that overlap is the texture.",
+  "salt": 4102,
+  "schedule": { "meanGapSec": 240, "minGapSec": 100, "gapJitter": 0.5 },
+  "durationSec": 3,
+  "exclusive": [],
+  "priority": 0,
+  "draws": [
+    { "name": "screen", "kind": "pick", "pool": ["all", "all", "left", "right", "center"] },
+    { "name": "strength", "kind": "range", "min": 0.35, "max": 0.8 },
+    { "name": "seconds", "kind": "range", "min": 0.7, "max": 1.9 }
+  ],
+  "tracks": [
+    { "channel": "screens", "target": "{screen}", "action": "interference", "at": 0, "params": { "strength": "{strength}", "seconds": "{seconds}" } },
+    { "channel": "audio", "target": "static_burst", "action": "play", "at": 0, "params": { "gain": "{strength}" } }
+  ]
+}

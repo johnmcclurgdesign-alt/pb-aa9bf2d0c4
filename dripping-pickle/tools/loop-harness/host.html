@@ -1,0 +1,320 @@
+<!doctype html>
+<!--
+  host.html — the Collectivus web player, reduced to what a Loop can observe. Served by harness.mjs.
+
+  It does what the site's player (LoopEmbedPlayer.svelte) does, in the same order, with the same
+  wire shapes:
+    1. registers the SAME service worker (loop-runtime-sw.js, a byte-identical copy the monorepo
+       gate compares) with scope /loop-runtime/;
+    2. fetches the payload ZIP, verifies its sha256 and unzips it in the page — all inside the ready
+       budget, as the site does — then hands the worker the files, the device ({ class: 'web',
+       tier }) and the Loop's media objects (`--media`, MEDIA6) in one `install`; a `boot` object
+       that fails verification fails the open, as on the site;
+    3. mounts the Loop at /loop-runtime/<id>/<entry> — a SUB-PATH, never the root, because a
+       payload that reaches `../` for a file is only caught below the root (bridge page §4);
+    4. puts a transparent overlay over the iframe and forwards every pointer event as the bridge's
+       `input` messages — the iframe itself never receives a real pointer event, on the site or here;
+    5. gives the Loop its ready budget (loop.json `readyBudgetSeconds`, else 15 s) and, when the
+       budget runs out, logs the player's error and takes the Loop down — which is what a viewer sees.
+
+  ⚠ No catalog, no CDN, no key: it reads only the payload and the media harness.mjs was given.
+  ⚠ Text on this page is the site player's own copy, verbatim, so a census of the error state
+    measures what the site would show.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collectivus Loop harness</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; background: #0c0e14; color: #f2f1ee; font: 16px/1.5 system-ui, sans-serif; }
+  /* The site's detail page at the web class's two viewports: the player is 1200×675 CSS px at
+     1440×900 and 342×192 at 390×844 (measured, device-leg web class, 2026-09-18) — a 1248 px
+     column with 24 px gutters. */
+  .page { max-width: 1248px; margin: 0 auto; padding: 24px; box-sizing: border-box; }
+  h1 { font-size: 20px; margin: 0 0 16px; font-weight: 600; }
+  .loop-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px;
+                overflow: hidden; background: #1c2233; }
+  .player-frame, .input-capture { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .player-frame { pointer-events: none; }
+  .input-capture { pointer-events: auto; touch-action: none; }
+  .player-status { position: absolute; inset: 0; display: flex; flex-direction: column;
+                   align-items: center; justify-content: center; gap: 12px; text-align: center;
+                   background: rgb(0 0 0 / 0.65); padding: 24px; margin: 0; }
+  .player-status p { margin: 0; }
+  .player-still-loading { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; text-align: center;
+                          background: rgb(0 0 0 / 0.65); padding: 8px 16px; pointer-events: none; }
+  .note { color: #a7a9b4; font-size: 14px; margin-top: 16px; }
+</style>
+</head>
+<body>
+<main class="page">
+  <h1 id="title">Loop harness</h1>
+  <div class="loop-embed" id="box"></div>
+  <p class="note" id="note"></p>
+</main>
+<script type="module">
+  // The site player's own copy (apps/web/src/lib/copy/worlds.ts WORLD_PLAYER), verbatim.
+  const COPY = {
+    LOADING: 'Getting you in.',
+    STILL_LOADING: "Taking a moment. The crew is on it. The world hasn't stopped.",
+    ERROR_HEADLINE: "Couldn't get you in.",
+    ERROR_BODY: "Something didn't load right. The world's still there — try again in a moment."
+  };
+  const SW_URL = '/loop-runtime-sw.js';
+  const SW_SCOPE = '/loop-runtime/';
+  const STILL_LOADING_AFTER_MS = 15000;
+
+  // ── the bridge's wire shapes (apps/web/src/lib/loop-embed/bridge.ts), as plain JS ──────────────
+  const SHELL = 'collectivus-shell';
+  const LOOP = 'collectivus-loop';
+  const TIERS = ['phone', 'tablet', 'laptop', 'desktop', 'ultra', 'max', 'tv'];
+  const clamp01 = (v) => Math.min(Math.max(v, 0), 1);
+  const unitPoint = (x, y, r) => ({
+    x: clamp01(r.width > 0 ? (x - r.left) / r.width : 0),
+    y: clamp01(r.height > 0 ? (y - r.top) / r.height : 0)
+  });
+  const pointMessage = (p, phase) =>
+    ({ source: SHELL, message: { type: 'input', input: { kind: 'point', x: p.x, y: p.y, phase } } });
+  const primaryMessage = (phase, p) =>
+    ({ source: SHELL, message: { type: 'input', input: { kind: 'primary', phase, x: p.x, y: p.y } } });
+  // The screen's SHORT side, not the iframe's — the site's one web tier pick (bridge.ts webTier).
+  const webTier = (s) => (Math.min(s.width, s.height) < 768 ? 'phone' : 'desktop');
+  const asTier = (v) => (TIERS.includes(v) ? v : null);
+  const readyTierLine = (requested, info) =>
+    `[Loop] tier requested=${requested} booted=${typeof info.tier === 'string' && info.tier ? info.tier : 'unknown'}`;
+
+  const params = new URLSearchParams(location.search);
+  const box = document.getElementById('box');
+  const state = { stage: 'idle', startedAt: 0, readyAfterMs: null, budgetMs: 0, loopId: '' };
+  window.__clvHarness = state;
+
+  function status(lines, cls = 'player-status') {
+    box.querySelectorAll('.player-status, .player-still-loading').forEach((el) => el.remove());
+    if (!lines) return;
+    const el = document.createElement('div');
+    el.className = cls;
+    for (const text of lines) {
+      const p = document.createElement('p');
+      p.textContent = text;
+      el.appendChild(p);
+    }
+    box.appendChild(el);
+  }
+
+  function fail(error) {
+    clearTimeout(state.timer); clearTimeout(state.slowTimer);
+    const detail = error instanceof Error ? error.message : String(error);
+    // ⚠ THE PLAYER'S OWN LINE, WITH ITS OWN PREFIX: the `exit` row reads `[loop-embed]` as the
+    // player's or the Loop's, exactly as it does on the site.
+    console.error('[loop-embed]', state.loopId, detail);
+    state.stage = 'error';
+    state.error = detail;
+    box.querySelectorAll('iframe, .input-capture').forEach((el) => el.remove());
+    status([COPY.ERROR_HEADLINE, COPY.ERROR_BODY]);
+  }
+
+  function activeWorker(registration) {
+    if (registration.active) return Promise.resolve(registration.active);
+    const installing = registration.installing ?? registration.waiting;
+    if (!installing) return Promise.reject(new Error('service worker registration has no worker'));
+    return new Promise((resolve, reject) => {
+      installing.addEventListener('statechange', () => {
+        if (installing.state === 'activated') resolve(installing);
+        if (installing.state === 'redundant') reject(new Error('service worker became redundant'));
+      });
+      if (installing.state === 'activated') resolve(installing);
+    });
+  }
+
+  // The site's MIME table (apps/web/src/lib/loop-embed/unzip.ts) — what the worker serves each file as.
+  const MIME_TYPES = {
+    js: 'text/javascript', mjs: 'text/javascript', html: 'text/html', htm: 'text/html',
+    css: 'text/css', json: 'application/json', importmap: 'application/json',
+    wasm: 'application/wasm', glb: 'model/gltf-binary', gltf: 'model/gltf+json',
+    ktx2: 'image/ktx2', webp: 'image/webp', basis: 'application/octet-stream',
+    png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', svg: 'image/svg+xml',
+    mp3: 'audio/mpeg', mp4: 'video/mp4', ogg: 'audio/ogg'
+  };
+  const mimeTypeFor = (path) => MIME_TYPES[path.split('.').pop()?.toLowerCase() ?? ''] ?? 'application/octet-stream';
+
+  async function sha256Hex(bytes) {
+    const digest = await crypto.subtle.digest('SHA-256', bytes);
+    return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // The payload zip, unzipped in the page as the site does. The site uses fflate's synchronous
+  // unzip; this uses the browser's own DecompressionStream (no dependency to ship). That is the one
+  // difference left in the load path, and its cost against fflate's has NOT been measured.
+  async function unzip(bytes) {
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    let eocd = -1;
+    for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i -= 1) {
+      if (view.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+    }
+    if (eocd < 0) throw new Error('the payload is not a zip');
+    const count = view.getUint16(eocd + 10, true);
+    let at = view.getUint32(eocd + 16, true);
+    const files = [];
+    for (let n = 0; n < count; n += 1) {
+      const method = view.getUint16(at + 10, true);
+      const packed = view.getUint32(at + 20, true);
+      const nameLength = view.getUint16(at + 28, true);
+      const skip = nameLength + view.getUint16(at + 30, true) + view.getUint16(at + 32, true);
+      const local = view.getUint32(at + 42, true);
+      const path = new TextDecoder().decode(bytes.subarray(at + 46, at + 46 + nameLength));
+      at += 46 + skip;
+      if (path.endsWith('/')) continue;
+      const start = local + 30 + view.getUint16(local + 26, true) + view.getUint16(local + 28, true);
+      const data = bytes.subarray(start, start + packed);
+      const out = method === 0 ? data.slice()
+        : new Uint8Array(await new Response(new Blob([data]).stream()
+            .pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+      files.push({ path, bytes: out, mimeType: mimeTypeFor(path) });
+    }
+    return files;
+  }
+
+  // loop.json, read the way the site reads it (apps/web/src/lib/loop-embed/manifest.ts).
+  function parseManifest(raw, paths) {
+    if (typeof raw !== 'object' || raw === null) throw new Error('loop.json could not be read');
+    if (raw.manifestVersion !== 1) {
+      throw new Error(`loop.json is version ${String(raw.manifestVersion)}; this build reads version 1`);
+    }
+    const entry = raw.entry;
+    if (typeof entry !== 'string' || entry.length === 0 || entry.includes('..')) {
+      throw new Error('loop.json has no valid entry document');
+    }
+    if (!paths.has(entry)) throw new Error(`loop.json names an entry (${entry}) that is not in the payload`);
+    return { entry };
+  }
+
+  // `media` (MEDIA6): the Loop's `media/…` objects, resolved by harness.mjs from --media exactly as
+  // the site's player resolves them from the catalog's manifest (`{ path, policy, type, sha256, bytes,
+  // url }`, the web reading the default variant). The worker verifies every `boot` object before it
+  // acknowledges, and acknowledges with `error` when one fails — the site then does not open the Loop.
+  function install(worker, loopId, files, device, media) {
+    return new Promise((resolve, reject) => {
+      function onInstalled(event) {
+        if (event.data?.type === 'installed' && event.data.loopId === loopId) {
+          navigator.serviceWorker.removeEventListener('message', onInstalled);
+          if (typeof event.data.error === 'string') reject(new Error(event.data.error));
+          else resolve();
+        }
+      }
+      navigator.serviceWorker.addEventListener('message', onInstalled);
+      worker.postMessage({ type: 'install', loopId, files, device, media });
+    });
+  }
+
+  function onLoopMessage(event) {
+    if (event.origin !== location.origin) return;
+    if (!event.data || event.data.source !== LOOP) return;
+    const message = event.data.message || {};
+    if (message.type === 'ready') {
+      if (state.stage !== 'ready') return; // the player had already given up
+      // ⚠ ACCEPTED EXACTLY WHEN THE SITE'S PLAYER WOULD ACCEPT IT: this message was handled before
+      // the budget timer's callback ran. The Loop's iframe is same-origin and shares this page's
+      // main thread, so a Loop that holds the thread can delay that timer, and a `ready` queued
+      // ahead of it gets through — on the site and here alike. `readyAfterMs` is when it was
+      // HANDLED, which can be past the budget; the `ready` row prints it and warns.
+      state.readyAfterMs = performance.now() - state.startedAt;
+      state.accepted = true;
+      clearTimeout(state.timer); clearTimeout(state.slowTimer);
+      box.querySelectorAll('.player-still-loading').forEach((el) => el.remove());
+      console.log(readyTierLine(state.device?.tier ?? 'none', message.info || {}));
+    } else if (message.type === 'log') {
+      console.log('[loop-embed]', state.loopId, message.message);
+    } else if (message.type === 'error') {
+      console.error('[loop-embed]', state.loopId, message.message);
+    }
+  }
+
+  function mount(loopId, entry) {
+    box.querySelectorAll('.player-status').forEach((el) => el.remove());
+    const frame = document.createElement('iframe');
+    frame.className = 'player-frame';
+    frame.src = `/loop-runtime/${loopId}/${entry}`;
+    frame.title = loopId;
+    frame.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+    frame.setAttribute('allow', 'autoplay');
+    const capture = document.createElement('div');
+    capture.className = 'input-capture';
+    const send = (message) => frame.contentWindow?.postMessage(message, location.origin);
+    const at = (e) => unitPoint(e.clientX, e.clientY, box.getBoundingClientRect());
+    capture.addEventListener('pointerdown', (e) => {
+      const p = at(e);
+      send(pointMessage(p, 'began')); send(primaryMessage('down', p));
+      capture.setPointerCapture(e.pointerId);
+    });
+    capture.addEventListener('pointermove', (e) => { if (e.buttons !== 0) send(pointMessage(at(e), 'moved')); });
+    const release = (phase) => (e) => {
+      if (capture.hasPointerCapture(e.pointerId)) capture.releasePointerCapture(e.pointerId);
+      const p = at(e);
+      send(pointMessage(p, phase === 'up' ? 'ended' : 'cancelled')); send(primaryMessage(phase, p));
+    };
+    capture.addEventListener('pointerup', release('up'));
+    capture.addEventListener('pointercancel', release('cancelled'));
+    box.append(frame, capture);
+  }
+
+  async function start(config) {
+    state.loopId = config.loopId;
+    state.stage = 'loading';
+    state.budgetMs = config.budgetSeconds * 1000;
+    state.startedAt = performance.now();
+    state.device = { class: 'web', tier: asTier(params.get('tier')) ?? webTier(screen) };
+    status([COPY.LOADING]);
+    // ⚠ THE BUDGET COVERS THE WHOLE SEQUENCE, from here — exactly as the site player's does.
+    state.timer = setTimeout(() => fail(new Error(`the Loop never became ready in ${config.budgetSeconds} s`)),
+      state.budgetMs);
+    if (state.budgetMs > STILL_LOADING_AFTER_MS) {
+      state.slowTimer = setTimeout(() => {
+        if (state.stage === 'loading') status([COPY.STILL_LOADING]);
+        else if (state.stage === 'ready' && state.readyAfterMs == null) status([COPY.STILL_LOADING], 'player-still-loading');
+      }, STILL_LOADING_AFTER_MS);
+    }
+    try {
+      const registration = await navigator.serviceWorker.register(SW_URL, { scope: SW_SCOPE });
+      const worker = await activeWorker(registration);
+      // ⚠ THE SAME WORK, IN THE SAME PLACE, INSIDE THE SAME BUDGET: the site player fetches the
+      // ZIP, hashes it, and unzips it in the page before the Loop can even start — seconds, for a
+      // 150 MB payload, all of it counted against `ready`. Serving the files pre-unzipped made
+      // Pirate Beach's phone run ready at 10.9 s here while the site's failed at 15 s.
+      const response = await fetch('/harness/payload.zip');
+      if (!response.ok) throw new Error(`payload fetch failed: ${response.status}`);
+      const zipBytes = new Uint8Array(await response.arrayBuffer());
+      if ((await sha256Hex(zipBytes)) !== config.sha256) throw new Error('payload failed verification');
+      const files = await unzip(zipBytes);
+      const manifestFile = files.find((f) => f.path === 'loop.json');
+      if (!manifestFile) throw new Error('loop.json missing from payload');
+      const manifest = parseManifest(JSON.parse(new TextDecoder().decode(manifestFile.bytes)),
+        new Set(files.map((f) => f.path)));
+      await install(worker, config.loopId, files, state.device, config.media ?? []);
+      if (state.stage === 'error') return; // the budget ran out while installing
+      window.addEventListener('message', onLoopMessage);
+      state.stage = 'ready'; // the iframe is mounted; the Loop's own `ready` clears the budget
+      mount(config.loopId, manifest.entry);
+    } catch (error) {
+      if (state.stage !== 'error') fail(error);
+    }
+  }
+
+  // Self-test only: a planted host-page error, so the `page` row can be watched failing.
+  if (params.get('plant') === 'host-error') {
+    setTimeout(() => { throw new Error('planted host-page error (harness self-test)'); }, 50);
+  }
+
+  if (params.has('idle')) {
+    document.getElementById('note').textContent = 'Idle — the viewer has left the Loop.';
+  } else {
+    const config = await (await fetch('/harness/config.json')).json();
+    document.getElementById('title').textContent = config.title || config.loopId;
+    document.getElementById('note').textContent =
+      `${config.payloadName} · ready budget ${config.budgetSeconds} s · tier ${params.get('tier') || 'the player’s own pick'}`;
+    start(config);
+  }
+</script>
+</body>
+</html>

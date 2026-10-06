@@ -1,0 +1,17 @@
+{
+  "id": "radio_on",
+  "kind": "user",
+  "enabled": true,
+  "description": "INT-002: the transistor radio is switched on. LOCAL — one viewer's radio is not the room's, and this never reaches the scheduler. The beat is authored rather than coded so the order reads as a real set: the switch clicks, the dial warms, and the station arrives a beat later, because valve-era electronics do not start instantly and a station that arrives WITH the click reads as a sound effect. Until AUD-B01 (#56) lands there is no licensable music to play, so the station is a synthesised original — see tools/audio.js.",
+  "salt": 4120,
+  "trigger": { "target": "radio_on" },
+  "durationSec": 2,
+  "exclusive": [],
+  "priority": 0,
+  "draws": [],
+  "tracks": [
+    { "channel": "audio", "target": "radio_tune", "action": "play", "at": 0, "params": { "gain": 1 } },
+    { "channel": "equipment", "target": "radio_dial", "action": "tween", "at": 0.1, "params": { "property": "emissiveIntensity", "to": 2.4, "seconds": 0.7 } },
+    { "channel": "audio", "target": "radio_station", "action": "play", "at": 0.55, "params": { "gain": 1 } }
+  ]
+}

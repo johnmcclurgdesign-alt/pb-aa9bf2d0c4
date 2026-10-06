@@ -1,0 +1,17 @@
+{
+  "id": "radio_off",
+  "kind": "user",
+  "enabled": true,
+  "description": "INT-002: the radio is switched off. A radio does not fade out — it stops — so the station goes first and the dial cools behind it, which is the order that reads as a switch rather than as a volume slider.",
+  "salt": 4121,
+  "trigger": { "target": "radio_off" },
+  "durationSec": 2,
+  "exclusive": [],
+  "priority": 0,
+  "draws": [],
+  "tracks": [
+    { "channel": "audio", "target": "radio_tune", "action": "play", "at": 0, "params": { "gain": 0.7 } },
+    { "channel": "audio", "target": "radio_station", "action": "stop", "at": 0.05, "params": {} },
+    { "channel": "equipment", "target": "radio_dial", "action": "tween", "at": 0.05, "params": { "property": "emissiveIntensity", "to": 0, "seconds": 0.9 } }
+  ]
+}

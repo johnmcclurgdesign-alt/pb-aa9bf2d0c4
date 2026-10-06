@@ -1,0 +1,68 @@
+<!doctype html>
+<!--
+  THE SHAPE-TEST FIXTURE (CMP1, 2026-09-12). A Loop-shaped page small enough to reason about,
+  used by tools/assert-tvos-surface.mjs --selftest to prove each of its checks can PASS on a
+  clean page and FAIL on a planted violation. It is never part of the payload: nothing in
+  loops/dripping-pickle/ reaches it.
+
+  Clean, it does exactly what a compliant web Loop does under the Apple TV binding's shape
+  (loops-docs 30-engines/web/00-status.md §6): one webgl2 context, a frame drawn, then
+  collectivus.ready() from INSIDE a completed frame.
+
+  ?plant=<name> makes it break in one documented way, so the rig can watch the matching check
+  go red. Each plant is a violation the binding's shape refuses, never a made-up error (dynamic
+  import() is the one rule an init script cannot emulate; the rig enforces it statically):
+    canvas2d    getContext('2d') and a property read on the null it returns (§6)
+    url         new URL(...) with no URL global (VC-058's exact failure)
+    convolver   AudioContext.prototype.createConvolver, absent on the binding
+    noready     draws a frame and never calls ready()
+    style       el.style.setProperty on an element from a minimal document (TW16)
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>tvos-shape fixture</title>
+  <style>html, body { margin: 0; background: #000; } canvas { display: block; }</style>
+</head>
+<body>
+  <canvas id="c" width="320" height="180"></canvas>
+  <script type="module">
+    const plant = new URLSearchParams(location.search).get('plant');
+    const canvas = document.getElementById('c');
+    const gl = canvas.getContext('webgl2');
+    if (!gl) throw new Error('fixture: no webgl2 context');
+
+    if (plant === 'canvas2d') {
+      // §6: returns null here, so the throw is one line later, on the first property.
+      const scratch = document.createElement('canvas');
+      const ctx = scratch.getContext('2d');
+      ctx.fillStyle = '#fff';
+    }
+    if (plant === 'url') {
+      // VC-058: `ReferenceError: Can't find variable: URL` before the entry module ran.
+      void new URL('./a.bin', 'http://fixture.local/x/');
+    }
+    if (plant === 'convolver') {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AC();
+      ctx.createConvolver();
+    }
+    if (plant === 'style') {
+      // TW16: a minimal document's elements have no CSSStyleDeclaration methods.
+      const el = document.createElement('div');
+      el.style.setProperty('opacity', '0');
+    }
+
+    let frames = 0;
+    function frame() {
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.clearColor(0.2, 0.5, 0.3, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      frames++;
+      if (frames === 2 && plant !== 'noready') window.collectivus?.ready?.({});
+      if (frames < 60) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

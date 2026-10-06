@@ -1,0 +1,19 @@
+{
+  "id": "jar_offbelt",
+  "kind": "user",
+  "enabled": true,
+  "description": "Gate A §8.4: a jar has come off the belt. The conveyor fires this the moment one goes over — the module owns the falling jar, this owns the BEAT, which is why the clean-up is authored here in seconds rather than buried in a timer. Option (a) of the two Josh put at Gate A: the feed's own interference covers the cut, and the floor is clean on the other side. Nothing here is shared state — a knocked-off jar is a local response, and this event never reaches the scheduler.",
+  "salt": 4106,
+  "trigger": { "target": "jar_offbelt" },
+  "durationSec": 8,
+  "exclusive": [],
+  "priority": 0,
+  "draws": [
+    { "name": "cover", "kind": "range", "min": 5.2, "max": 7.4 }
+  ],
+  "tracks": [
+    { "channel": "audio", "target": "jar_smash", "action": "play", "at": 0, "params": { "gain": 1 } },
+    { "channel": "screens", "target": "all", "action": "interference", "at": 5.2, "params": { "strength": 0.85, "seconds": 1.1 } },
+    { "channel": "equipment", "target": "conveyor", "action": "clear", "at": 5.65, "params": {} }
+  ]
+}

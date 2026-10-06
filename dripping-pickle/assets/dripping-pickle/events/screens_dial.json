@@ -1,0 +1,16 @@
+{
+  "id": "screens_dial",
+  "kind": "user",
+  "enabled": true,
+  "description": "INT-003: the dial under the left CRT. It takes the array off the screensaver and back to the raw feed — one dial for the whole array, because the three devices are one broadcast (DP-W2) and a per-device toggle would be three states nobody asked for. `mode` arrives from the tap, which is the only thing that knows which way the dial is being turned. The array goes back to what it ships with at the next SCHEDULED event: the screens belong to the room, not to the viewer.",
+  "salt": 4122,
+  "trigger": { "target": "screens_dial", "inputs": ["mode"] },
+  "durationSec": 2,
+  "exclusive": [],
+  "priority": 0,
+  "draws": [],
+  "tracks": [
+    { "channel": "audio", "target": "dial_click", "action": "play", "at": 0, "params": { "gain": 1 } },
+    { "channel": "screens", "target": "all", "action": "base", "at": 0.08, "params": { "mode": "{mode}" } }
+  ]
+}

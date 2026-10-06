@@ -1,0 +1,156 @@
+{
+  "version": 1,
+  "note": [
+    "The odd-jar ladder (Design System §8, signed at Gate A §8.1) as a DATA SET.",
+    "Rarity is declared as a MEAN INTERVAL IN HOURS, never as a raw weight — a weight",
+    "is only meaningful once you also know the belt's jar rate, and nobody reading a",
+    "weight can tell whether it means 'twice a shift' or 'never'. The loop converts an",
+    "interval to a per-jar probability using the belt's own measured rate, so changing",
+    "the belt speed or the jar pitch cannot silently re-tune the whole ladder.",
+    "Verify with: node tools/jar-rarity.mjs"
+  ],
+  "salt": "dp.jar.contents.v1",
+  "belt": {
+    "speed": 0.1,
+    "pitch": 0.32,
+    "jarsPerHour": 1125,
+    "note": "jarsPerHour = 3600 * speed / pitch. Recomputed by the loop from the live belt; this value is here so the data file can be audited on its own."
+  },
+  "tiers": {
+    "baseline": "every jar that is not something else",
+    "rare": "Design System §6 'Rare (daily-scale)' — the signed odd set",
+    "extended": "Gate A §8.1 extended tier — rarer still",
+    "mythic": "Design System §6 'Mythic (weekly-scale, clip-engineered)'"
+  },
+  "contents": [
+    {
+      "id": "pickles",
+      "tier": "baseline",
+      "label": "dill spears in brine",
+      "brine": "#7d8c3a",
+      "fill": "#6f7f30",
+      "chunks": 7,
+      "chunkShape": "spear"
+    },
+    {
+      "id": "eyeballs",
+      "tier": "rare",
+      "meanIntervalHours": 8,
+      "label": "eyeballs",
+      "brine": "#8a9247",
+      "fill": "#e8e4d8",
+      "chunks": 5,
+      "chunkShape": "sphere"
+    },
+    {
+      "id": "dice",
+      "tier": "rare",
+      "meanIntervalHours": 8,
+      "label": "dice",
+      "brine": "#848c42",
+      "fill": "#d9d2c4",
+      "chunks": 9,
+      "chunkShape": "cube"
+    },
+    {
+      "id": "pocket_knife",
+      "tier": "rare",
+      "meanIntervalHours": 8,
+      "label": "a pocket knife",
+      "brine": "#7f8a3e",
+      "fill": "#7a2c22",
+      "chunks": 1,
+      "chunkShape": "slab"
+    },
+    {
+      "id": "cash",
+      "tier": "rare",
+      "meanIntervalHours": 8,
+      "label": "a stack of cash",
+      "brine": "#828c44",
+      "fill": "#3f5c3a",
+      "chunks": 1,
+      "chunkShape": "stack"
+    },
+    {
+      "id": "severed_hand",
+      "tier": "rare",
+      "meanIntervalHours": 8,
+      "label": "a severed hand",
+      "brine": "#7b8a3c",
+      "fill": "#c9a08c",
+      "chunks": 1,
+      "chunkShape": "hand"
+    },
+    {
+      "id": "goldfish",
+      "tier": "extended",
+      "meanIntervalHours": 48,
+      "label": "a goldfish, alive",
+      "brine": "#9aa85a",
+      "fill": "#e07b22",
+      "chunks": 1,
+      "chunkShape": "fish"
+    },
+    {
+      "id": "rubber_duck",
+      "tier": "extended",
+      "meanIntervalHours": 48,
+      "label": "a rubber duck",
+      "brine": "#8b9548",
+      "fill": "#f0c419",
+      "chunks": 1,
+      "chunkShape": "duck"
+    },
+    {
+      "id": "blueprint",
+      "tier": "extended",
+      "meanIntervalHours": 48,
+      "label": "a rolled blueprint",
+      "brine": "#7d8a40",
+      "fill": "#2f5d8a",
+      "chunks": 1,
+      "chunkShape": "roll"
+    },
+    {
+      "id": "jar_of_keys",
+      "tier": "extended",
+      "meanIntervalHours": 48,
+      "label": "keys",
+      "brine": "#818c44",
+      "fill": "#8a7b3f",
+      "chunks": 11,
+      "chunkShape": "key"
+    },
+    {
+      "id": "impossible",
+      "tier": "mythic",
+      "meanIntervalHours": 168,
+      "label": "something that does not fit",
+      "brine": "#6f7f3a",
+      "fill": "#b8c7d6",
+      "chunks": 1,
+      "chunkShape": "impossible"
+    }
+  ],
+  "labels": {
+    "note": [
+      "Label lore, re-raised and taken at DP-W3 (Gate A §8.5 recorded it as CUT with an",
+      "explicit invitation to re-raise here, because the variant set is authored anyway).",
+      "Lot codes and years encode the universe timeline for whoever freezes the frame.",
+      "It is data, so it can be dropped again without a rebuild.",
+      "Voice: slab serif, in-world, deadpan. Nothing on a label winks (PLAN §6.4)."
+    ],
+    "brand": "THE DRIPPING PICKLE",
+    "variants": [
+      { "product": "DILL SPEARS", "size": "NET 24 OZ", "lot": "LOT 26-114", "year": 1926 },
+      { "product": "KOSHER HALVES", "size": "NET 24 OZ", "lot": "LOT 26-402", "year": 1926 },
+      { "product": "BREAD & BUTTER", "size": "NET 16 OZ", "lot": "LOT 40-018", "year": 1940 },
+      { "product": "WHOLE SOURS", "size": "NET 32 OZ", "lot": "LOT 40-771", "year": 1940 },
+      { "product": "DILL CHIPS", "size": "NET 16 OZ", "lot": "LOT 65-203", "year": 1965 },
+      { "product": "HOT SPEARS", "size": "NET 24 OZ", "lot": "LOT 65-559", "year": 1965 },
+      { "product": "GHERKINS", "size": "NET 12 OZ", "lot": "LOT 65-880", "year": 1965 },
+      { "product": "RELISH", "size": "NET 10 OZ", "lot": "LOT 40-336", "year": 1940 }
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "_": "What the scene's executors can actually do, per channel: target -> actions. Two checks read this. tools/events-check.mjs refuses an event whose track names a target/action not listed here (it would fire, log, align, and do nothing). In the page, window.__events.verifyVocabulary() asks every registered executor whether it supports each entry \u2014 so this file cannot drift ahead of the code either. Adding a capability means: implement it in the executor, list it here, then author events against it. Targets in braces are drawn per event; the check resolves them against every value the draw's pool can produce.",
+  "screens": {
+    "all": [
+      "interference",
+      "glow",
+      "show",
+      "line",
+      "restore",
+      "base"
+    ],
+    "left": [
+      "interference",
+      "glow",
+      "show",
+      "line",
+      "restore",
+      "base"
+    ],
+    "center": [
+      "interference",
+      "glow",
+      "show",
+      "line",
+      "restore",
+      "base"
+    ],
+    "right": [
+      "interference",
+      "glow",
+      "show",
+      "line",
+      "restore",
+      "base"
+    ]
+  },
+  "audio": {
+    "*": [
+      "play",
+      "stop",
+      "volume"
+    ]
+  },
+  "npc": {
+    "cat": [
+      "wake",
+      "roam",
+      "rest",
+      "hunt",
+      "idle",
+      "groom",
+      "stare"
+    ],
+    "mouse": [
+      "scurry",
+      "belt",
+      "flee",
+      "hide",
+      "freeze"
+    ]
+  },
+  "equipment": {
+    "conveyor": [
+      "stall",
+      "wobble",
+      "clear"
+    ],
+    "pendant_1": [
+      "set",
+      "tween"
+    ],
+    "pendant_2": [
+      "set",
+      "tween"
+    ],
+    "radio_dial": [
+      "set",
+      "tween"
+    ],
+    "ham_glow": [
+      "set",
+      "tween"
+    ]
+  }
+}

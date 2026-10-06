@@ -1,0 +1,18 @@
+{
+  "id": "cat_stirs",
+  "kind": "ambient",
+  "enabled": true,
+  "description": "The dozing cat wakes, holds the awake lying pose for a drawn few seconds, and settles again. The nap cycle's own 20 s timer still runs underneath (art direction 2026-08-19); this is the shared-clock stir on top of it, so every viewer sees the same wake at the same second. Named 'cat', not 'Gherkin' — Gate A §8.3 defers the codename, so the id stays generic and a later name is a content edit.",
+  "salt": 4104,
+  "schedule": { "meanGapSec": 420, "minGapSec": 200, "gapJitter": 0.45 },
+  "durationSec": 14,
+  "exclusive": ["cat"],
+  "priority": 0,
+  "draws": [
+    { "name": "hold", "kind": "range", "min": 3, "max": 7 }
+  ],
+  "tracks": [
+    { "channel": "npc", "target": "cat", "action": "wake", "at": 0, "params": { "holdSeconds": "{hold}" } },
+    { "channel": "audio", "target": "cat_wake", "action": "play", "at": 0.6, "params": { "gain": 0.55 } }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "pendant_flicker",
+  "kind": "ambient",
+  "enabled": true,
+  "description": "One of the two overnight pendants stutters — an old fitting on a tired circuit. A flicker is a TIMELINE, so it is authored as one here (six sets a few hundredths apart, then a tween home) rather than as a 'flicker' action in the executor. `scale` is relative to the light's fitted intensity so the ?pendant= dial is never clobbered.",
+  "salt": 4103,
+  "schedule": { "meanGapSec": 480, "minGapSec": 180, "gapJitter": 0.5 },
+  "durationSec": 2,
+  "exclusive": ["lights"],
+  "priority": 0,
+  "draws": [
+    { "name": "lamp", "kind": "pick", "pool": ["pendant_1", "pendant_2"] },
+    { "name": "dip", "kind": "range", "min": 0.3, "max": 0.65 }
+  ],
+  "tracks": [
+    { "channel": "equipment", "target": "{lamp}", "action": "set",   "at": 0.00, "params": { "property": "intensity", "scale": "{dip}" } },
+    { "channel": "equipment", "target": "{lamp}", "action": "set",   "at": 0.07, "params": { "property": "intensity", "scale": 1 } },
+    { "channel": "equipment", "target": "{lamp}", "action": "set",   "at": 0.12, "params": { "property": "intensity", "scale": "{dip}" } },
+    { "channel": "equipment", "target": "{lamp}", "action": "set",   "at": 0.23, "params": { "property": "intensity", "scale": 1 } },
+    { "channel": "equipment", "target": "{lamp}", "action": "set",   "at": 0.34, "params": { "property": "intensity", "scale": "{dip}" } },
+    { "channel": "equipment", "target": "{lamp}", "action": "tween", "at": 0.42, "params": { "property": "intensity", "scale": 1, "seconds": 0.6 } },
+    { "channel": "audio", "target": "fitting_buzz", "action": "play", "at": 0 }
+  ]
+}

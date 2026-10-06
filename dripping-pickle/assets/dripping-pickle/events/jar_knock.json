@@ -1,0 +1,19 @@
+{
+  "id": "jar_knock",
+  "kind": "user",
+  "enabled": true,
+  "description": "Canon §7 TestFlight set: jar knock — a tapped jar wobbles, and once in a great while comes off the belt (Gate A §8.4). LOCAL: fires on the viewer who tapped and never touches the shared schedule. `jar` arrives from the tap itself (trigger.inputs); how hard it rings AND whether it goes over are drawn from the shared seed at the tap second, so the response is local but its content is not a local dice roll.",
+  "salt": 4105,
+  "trigger": { "target": "jar", "inputs": ["jar"] },
+  "durationSec": 3,
+  "exclusive": [],
+  "priority": 0,
+  "draws": [
+    { "name": "strength", "kind": "range", "min": 0.45, "max": 1.0 },
+    { "name": "roll", "kind": "range", "min": 0.0, "max": 1.0 }
+  ],
+  "tracks": [
+    { "channel": "equipment", "target": "conveyor", "action": "wobble", "at": 0, "params": { "jar": "{jar}", "strength": "{strength}", "seconds": 2.4, "roll": "{roll}", "knockOffBelow": 0.025 } },
+    { "channel": "audio", "target": "jar_knock", "action": "play", "at": 0, "params": { "gain": "{strength}" } }
+  ]
+}

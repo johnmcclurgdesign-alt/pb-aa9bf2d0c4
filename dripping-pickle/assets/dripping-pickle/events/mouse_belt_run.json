@@ -1,0 +1,22 @@
+{
+  "id": "mouse_belt_run",
+  "kind": "ambient",
+  "enabled": true,
+  "description": "The belt life. He comes and goes through the conveyor's OWN cut-out, never up the wall — a climb is invisible at the top and was the source of every collision NPC-003's route probe found. Rail run or jar ride is the shared `mode` draw (W9, 2026-09-24) — it was a LOCAL counter alternating from each client's page load, so every entry's first run was the rail, a ride came ~27 min in on average, no device leg ever saw one, and two devices could show different habits for the same fire. Appended LAST so no other draw's stream moved; the rail measures 94 % visible down run A and a jar lid 100 %, against 0 % for the belt's top surface. DP-W8: a jar goes over as he passes it. The wobble is HIS — 12 s in, which is where the run puts him among the jars rather than still in the cut-out — and once in 25 runs he puts one off the edge entirely. `slot` is a fraction of the LIVE run, never an index: the belt has moved by the time the track is dispatched, so an authored index would name a different jar on every client.",
+  "salt": 4110,
+  "schedule": { "meanGapSec": 620, "minGapSec": 280, "gapJitter": 0.45 },
+  "durationSec": 40,
+  "exclusive": ["mouse"],
+  "priority": 0,
+  "draws": [
+    { "name": "seconds", "kind": "range", "min": 26, "max": 36 },
+    { "name": "slot", "kind": "range", "min": 0.15, "max": 0.85 },
+    { "name": "roll", "kind": "range", "min": 0.0, "max": 1.0 },
+    { "name": "mode", "kind": "pick", "pool": ["rail", "ride"] }
+  ],
+  "tracks": [
+    { "channel": "npc", "target": "mouse", "action": "belt", "at": 0, "params": { "mode": "{mode}", "seconds": "{seconds}" } },
+    { "channel": "equipment", "target": "conveyor", "action": "wobble", "at": 12, "params": { "slot": "{slot}", "strength": 0.7, "seconds": 2.0, "roll": "{roll}", "knockOffBelow": 0.04 } },
+    { "channel": "audio", "target": "jar_clink", "action": "play", "at": 12, "params": { "gain": 0.7 } }
+  ]
+}

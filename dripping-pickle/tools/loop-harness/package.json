@@ -1,0 +1,11 @@
+{
+  "name": "collectivus-loop-harness",
+  "private": true,
+  "description": "Collectivus's web class, run on a Loop author's own desk. See 40-delivery/35-harness.md.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "self-test": "node harness.mjs --self-test",
+    "harness": "node harness.mjs"
+  }
+}

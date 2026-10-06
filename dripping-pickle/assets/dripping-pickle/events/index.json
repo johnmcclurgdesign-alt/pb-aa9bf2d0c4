@@ -1,0 +1,21 @@
+{
+  "_": "Every event file in this folder, by id. A browser cannot list a directory, so this is the listing. node tools/events-check.mjs fails if the folder and this list disagree in either direction.",
+  "events": [
+    "cat_hunts",
+    "cat_stirs",
+    "conveyor_stall",
+    "delivery_mission",
+    "jar_knock",
+    "jar_offbelt",
+    "mission_report",
+    "mouse_belt_run",
+    "mouse_bolt",
+    "mouse_errand",
+    "mouse_freeze",
+    "pendant_flicker",
+    "radio_off",
+    "radio_on",
+    "screens_dial",
+    "signal_interference"
+  ]
+}

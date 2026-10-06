@@ -1,0 +1,45 @@
+{
+  "id": "mouse_bolt",
+  "kind": "user",
+  "enabled": true,
+  "description": "The hole escape. LOCAL, and local because proximity IS local: the cat's path during a hunt is per-client, so the second at which he closes on the mouse differs between viewers and routing it through the shared scheduler would make two clients disagree about the schedule itself. The scene fires this from its own frame loop when a roaming cat comes within a metre of a mouse who is out on the floor (?evade= moves that distance). Its trigger target is 'cat_near' rather than a tap — nothing about a user event requires a finger. How he runs is still drawn from the shared seed at the trigger second: local response, non-local content. ★ AND IT CLAIMS NO EXCLUSIVE CHANNEL, for the reason DP-W8 measured on the tap: `exclusive` DROPS rather than queues, and the mouse is only ever out on the floor BECAUSE an ambient event (mouse_errand, exclusive on `mouse`) put him there — so an evade reflex exclusive on the same channel is refused precisely when it is needed. Watched happening: 'mouse_bolt(local) DROPPED exclusive=mouse' with the cat 0.6 m away and the mouse standing still. The scene's own 8 s debounce is what stops a second bolt, which is the right place for it — a reflex is not a scheduled beat.",
+  "salt": 4112,
+  "trigger": {
+    "target": "cat_near"
+  },
+  "durationSec": 4,
+  "exclusive": [],
+  "priority": 2,
+  "draws": [
+    {
+      "name": "profile",
+      "kind": "pick",
+      "pool": [
+        "bolt",
+        "bolt",
+        "bolt",
+        "wary"
+      ]
+    }
+  ],
+  "tracks": [
+    {
+      "channel": "npc",
+      "target": "mouse",
+      "action": "flee",
+      "at": 0,
+      "params": {
+        "profile": "{profile}"
+      }
+    },
+    {
+      "channel": "audio",
+      "target": "mouse_bolt",
+      "action": "play",
+      "at": 0,
+      "params": {
+        "gain": 0.6
+      }
+    }
+  ]
+}
