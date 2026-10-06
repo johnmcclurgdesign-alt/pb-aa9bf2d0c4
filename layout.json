@@ -48,13 +48,13 @@
     },
     "CAM_CANNON": {
       "position": [
-        -2.072,
-        3.909,
-        -32.169
+        6.631,
+        4.443,
+        -32.32
       ],
       "yawRad": 0,
       "scale": 1,
-      "lens": 25.0,
+      "lens": 24.3,
       "sensor": 35.0,
       "dof": {
         "on": false,
@@ -64,9 +64,9 @@
     },
     "CAM_CANNON_Target": {
       "position": [
-        0.887,
-        3.97,
-        -41.721
+        5.091,
+        2.358,
+        -41.978
       ],
       "yawRad": 0,
       "scale": 1
@@ -138,6 +138,31 @@
       ],
       "yawRad": -2.23648,
       "scale": 2.4132
+    },
+    "CAM_BILLBOARD": {
+      "position": [
+        -12.273,
+        17.749,
+        2.645
+      ],
+      "yawRad": 0,
+      "scale": 1,
+      "lens": 24.3,
+      "sensor": 35.0,
+      "dof": {
+        "on": false,
+        "fstop": 1.0,
+        "focus": 10.0
+      }
+    },
+    "CAM_BILLBOARD_Target": {
+      "position": [
+        -11.358,
+        17.67,
+        -7.313
+      ],
+      "yawRad": 0,
+      "scale": 1
     }
   },
   "palmGroves": {
