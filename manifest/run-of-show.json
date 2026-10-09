@@ -1,11 +1,33 @@
 {
   "manifestVersion": 2,
   "loopId": "pirate-beach",
+  "_comment": "THE SEED (issue #191, John 2026-10-07). The offline floor: a bundled Loop on a fresh install with no network, or any viewer before Looper publishes a run of show, still sees the cove's moments. A run of show from window.collectivus.runOfShow() (Looper) REPLACES this whole document. Every kind is an id in main.js's event registry (src/events.js); the scheduler is src/run-of-show/ (vendored). Common/uncommon/rare only: epic and up are server-rolled (Q354). Channels: 'sky' (flybys), 'sea' (the ship and the kraken never overlap), 'dock' (the cannon), 'beach' (the crab), 'perch' (the gull), 'night' (fireworks salvos 20:30-23:30 Chicago, real evening time; the sky may still read 10:00 — John 2026-10-07: 'you can actually see them pretty well during the day'). The window is one day from 04:00 Chicago: the scheduler resets at each window start and a few moments bunch up just after it, so that falls in the quiet hours.",
   "timeZone": "America/Chicago",
   "runSeed": 1491,
-  "epoch": 1791090000,
-  "validFrom": 1791090000,
-  "validUntil": 1791176400,
+  "epoch": 1791104400,
+  "validFrom": 1791104400,
+  "validUntil": 1791190800,
   "prefetchLeadSec": 1800,
-  "events": []
+  "events": [
+    { "id": "cannon", "kind": "cannon.fire", "salt": 5101, "rarity": "common",
+      "meanGapSec": 1200, "minGapSec": 480, "gapJitter": 0.35, "durationSec": 8, "exclusive": "dock", "priority": 0, "enabled": true },
+    { "id": "gull", "kind": "gull.land", "salt": 5107, "rarity": "common",
+      "meanGapSec": 1500, "minGapSec": 720, "gapJitter": 0.35, "durationSec": 50, "exclusive": "perch", "priority": 0, "enabled": true,
+      "draws": [{ "name": "spot", "kind": "pick", "pool": ["cooler", "boat", "chair"] }] },
+    { "id": "crab_heist", "kind": "crab.heist", "salt": 5113, "rarity": "common",
+      "meanGapSec": 2700, "minGapSec": 1500, "gapJitter": 0.3, "durationSec": 75, "exclusive": "beach", "priority": 1, "enabled": true },
+    { "id": "crab_push", "kind": "crab.push", "salt": 5119, "rarity": "uncommon",
+      "meanGapSec": 3600, "minGapSec": 1800, "gapJitter": 0.3, "durationSec": 50, "exclusive": "beach", "priority": 0, "enabled": true },
+    { "id": "flyby_ltr", "kind": "flyby.ltr", "salt": 5123, "rarity": "uncommon",
+      "meanGapSec": 5400, "minGapSec": 2700, "gapJitter": 0.3, "durationSec": 45, "exclusive": "sky", "priority": 0, "enabled": true },
+    { "id": "flyby_rtl", "kind": "flyby.rtl", "salt": 5131, "rarity": "uncommon",
+      "meanGapSec": 5400, "minGapSec": 2700, "gapJitter": 0.3, "durationSec": 45, "exclusive": "sky", "priority": 0, "enabled": true },
+    { "id": "ship_sailpast", "kind": "ship.sailpast", "salt": 5137, "rarity": "uncommon",
+      "meanGapSec": 7200, "minGapSec": 4500, "gapJitter": 0.3, "durationSec": 340, "exclusive": "sea", "priority": 1, "enabled": true },
+    { "id": "kraken", "kind": "kraken.breach", "salt": 5141, "rarity": "rare",
+      "meanGapSec": 14400, "minGapSec": 7200, "gapJitter": 0.3, "durationSec": 25, "exclusive": "sea", "priority": 2, "enabled": true },
+    { "id": "fireworks", "kind": "fireworks.salvo", "salt": 5147, "rarity": "uncommon",
+      "meanGapSec": 3000, "minGapSec": 1800, "gapJitter": 0.3, "durationSec": 15, "exclusive": "night", "priority": 0, "enabled": true,
+      "when": [{ "clock": { "every": "day", "fromSec": 73800, "toSec": 84600 } }] }
+  ]
 }
